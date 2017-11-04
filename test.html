@@ -1,0 +1,71 @@
+<html>
+    <!-- Terry Example -->
+    <head>
+            <style>
+                    * {
+                        box-sizing: border-box;
+                    }
+                    .header, .footer {
+                        background-color: grey;
+                        color: white;
+                        padding: 15px;
+                    }
+                    .column {
+                        float: left;
+                        padding: 15px;
+                    }
+                    .clearfix::after {
+                        content: "";
+                        clear: both;
+                        display: table;
+                    }
+                    .menu {
+                        width: 25%;
+                    }
+                    .content {
+                        width: 75%;
+                    }
+                    .menu ul {
+                        list-style-type: none;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .menu li {
+                        padding: 8px;
+                        margin-bottom: 8px;
+                        background-color: #33b5e5;
+                        color: #ffffff;
+                    }
+                    .menu li:hover {
+                        background-color: #0099cc;
+                    }
+                    </style>
+
+    </head>
+    <body>
+
+   <div class="column menu">
+       <table>
+           <tr>
+               <th>Column 1</th>
+               <th>Column 2 </th>
+           </tr>
+           <tr>
+               <td>Col1</td>
+               <td>Col2</td>
+           </tr>
+       </table>
+
+   </div>
+    <div class="content menu">
+<ul>
+    <li>List 1</li>
+    <li>List 2</li>
+</ul>
+   </div>
+
+    <script type="text/javascript">
+   
+    </script>
+    </body>
+    </html>
