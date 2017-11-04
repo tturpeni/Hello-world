@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font: 12px Arial;
+        }
+
+        path {
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+    </style>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.css" rel="stylesheet">
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.js" integrity="sha256-tA8y0XqiwnpwmOIl3SGAcFl2RvxHjA8qp0+1uCGmRmg="
+        crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/bootstrap-slider.js"></script>
+
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            console.log("ready!");
+
+            $("#ex2").slider({});
+
+        });
+
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="graph1"></div>
+                <script>
+                    var margin = { top: 30, right: 20, bottom: 30, left: 50 },
+                        width = 300 - margin.left - margin.right,
+                        height = 400 - margin.top - margin.bottom;
+                    var dataSource = [
+                        { "x": 10, "y": 50000 },
+                        { "x": 20, "y": 60000 },
+                        { "x": 30, "y": 250000 },
+                        { "x": 40, "y": 300000 },
+                        { "x": 50, "y": 359000 },
+                        { "x": 60, "y": 400000 },
+                        { "x": 70, "y": 450000 },
+                        { "x": 80, "y": 500000 },
+                        { "x": 90, "y": 550000 },
+                        { "x": 100, "y": 7000000 }
+                    ];
+                    var mfi = {
+                        data: []
+                    };
+                    dataSource.forEach(function (item, index) {
+                        mfi.data.push({
+                            "x": Math.round(dataSource[index].x),
+                            "y": Math.round(dataSource[index].y)
+                        });
+                    });
+                    console.log(mfi);
+                    // domain = input ; range output
+                    var xScale = d3.scale.linear()
+                        .domain([d3.min(mfi.data, function (d) { return d.x; }), d3.max(mfi.data, function (d) { return d.x; })])
+                        .range([0, width])
+                        .nice();
+                    var yScale = d3.scale.linear()
+                        .domain([d3.min(mfi.data, function (d) { return d.y; }), d3.max(mfi.data, function (d) { return d.y; })])
+                        .range([height, 0])
+                        .nice();
+                    // console.log("xScale: " + xScale(300));
+
+                    // define the axis
+                    var xAxis = d3.svg.axis().scale(xScale)
+                        .orient("bottom").ticks(width / 60);
+                    var yAxis = d3.svg.axis().scale(yScale)
+                        .orient("left").ticks(height / 50).tickFormat(d3.format("s"));
+
+                    // Adds the svg canvas
+                    var svg = d3.select("#graph1")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+                    // Define the line
+                    var valueline = d3.svg.line()
+                        .x(function (d) { return xScale(d.x); })
+                        .y(function (d) { return yScale(d.y); })
+                        .interpolate("cardinal");
+
+                    // Add the valueline path.
+                    svg.append("path")
+                        .attr("class", "line")
+                        .attr("d", valueline(mfi.data));
+
+                    // Add the X Axis
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+
+                    // Add the Y Axis
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+
+                    // Add the text label for the Y axis
+                    svg.append("text")
+                        .attr("transform", "translate(" + margin.bottom + " ," + (margin.right) + ")")
+                        // .attr("y", 0 - margin.left)
+                        // .attr("x", 0 - (height / 2))
+                        .attr("dy", "1em")
+                        .style("text-anchor", "middle")
+                        .text("MFI:");
+
+                    // Add the text label for the x axis
+                    svg.append("text")
+                        .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+                        .style("text-anchor", "middle")
+                        .text("Animal");
+                </script>
+            </div>
+            <div class="col-md-6">
+                <div id="graph2"></div>
+                <script>
+                    var margin = { top: 30, right: 20, bottom: 30, left: 50 },
+                        width = 300 - margin.left - margin.right,
+                        height = 400 - margin.top - margin.bottom;
+                    var dataSource = [
+                        { "x": 10, "y": 50000 },
+                        { "x": 20, "y": 60000 },
+                        { "x": 30, "y": 250000 },
+                        { "x": 40, "y": 300000 },
+                        { "x": 50, "y": 359000 },
+                        { "x": 60, "y": 400000 },
+                        { "x": 70, "y": 450000 },
+                        { "x": 80, "y": 500000 },
+                        { "x": 90, "y": 550000 },
+                        { "x": 100, "y": 7000000 }
+                    ];
+                    var mfi = {
+                        data: []
+                    };
+                    dataSource.forEach(function (item, index) {
+                        mfi.data.push({
+                            "x": Math.round(dataSource[index].x),
+                            "y": Math.round(dataSource[index].y)
+                        });
+                    });
+                    console.log(mfi);
+                    // domain = input ; range output
+                    var xScale = d3.scale.linear()
+                        .domain([d3.min(mfi.data, function (d) { return d.x; }), d3.max(mfi.data, function (d) { return d.x; })])
+                        .range([0, width])
+                        .nice();
+                    var yScale = d3.scale.linear()
+                        .domain([d3.min(mfi.data, function (d) { return d.y; }), d3.max(mfi.data, function (d) { return d.y; })])
+                        .range([height, 0])
+                        .nice();
+                    // console.log("xScale: " + xScale(300));
+
+                    // define the axis
+                    var xAxis = d3.svg.axis().scale(xScale)
+                        .orient("bottom").ticks(width / 60);
+                    var yAxis = d3.svg.axis().scale(yScale)
+                        .orient("left").ticks(height / 50).tickFormat(d3.format("s"));
+
+                    // Adds the svg canvas
+                    var svg = d3.select("#graph2")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+                    // Define the line
+                    var valueline = d3.svg.line()
+                        .x(function (d) { return xScale(d.x); })
+                        .y(function (d) { return yScale(d.y); })
+                        .interpolate("cardinal");
+
+                    // Add the valueline path.
+                    svg.append("path")
+                        .attr("class", "line")
+                        .attr("d", valueline(mfi.data));
+
+                    // Add the X Axis
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+
+                    // Add the Y Axis
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+
+                    // Add the text label for the Y axis
+                    svg.append("text")
+                        .attr("transform", "translate(" + margin.bottom + " ," + (margin.right) + ")")
+                        // .attr("y", 0 - margin.left)
+                        // .attr("x", 0 - (height / 2))
+                        .attr("dy", "1em")
+                        .style("text-anchor", "middle")
+                        .text("MFI:");
+
+                    // Add the text label for the x axis
+                    svg.append("text")
+                        .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+                        .style("text-anchor", "middle")
+                        .text("Animal");
+                </script>
+            </div>
+        </div>
+        <div class="row">
+            <div class='col-md-6 slider-example'>
+                <h3>Example 2:</h3>
+                <p>Range selector, options specified via data attribute.</p>
+                <div class="well">
+                    Filter by price interval:
+                    <b>10</b>
+                    <input id="ex2" type="text" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="5" data-slider-value="[250,450]"
+                    />
+                    <b>1000</b>
+                </div>
+            </div>
+            <div class='col-md-6 slider-example'>
+                <h3>Example 2:</h3>
+                <p>Range selector, options specified via data attribute.</p>
+                <div class="well">
+                    Filter by price interval:
+                    <b>10</b>
+                    <input id="ex2" type="text" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="5" data-slider-value="[250,450]"
+                    />
+                    <b>1000</b>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
